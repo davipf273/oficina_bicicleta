@@ -9,7 +9,7 @@ const cadastrar = async (req,res)=> {
         return res.status(401).json({message: 'Todos os campos são obrigatorios!'})
     }
 
-    if(valores.cpf.leght !== 11){
+    if(valores.cpf.length !== 11){
         return res.status(400).json({message: 'O CPF deve conter exatamente 11 digitos'})
     }
 
@@ -72,9 +72,7 @@ const consultar = async(req,res)=>{
         }
 
         const bytes = CryptoJS.AES.decrypt(cliente.cpf,CHAVE_SEGRETA)
-        console.log('bytes = ',bytes)
         const cpfCriptografado = bytes.toString(CryptoJS.enc.Utf8)
-        console.log('cpf descriptografado = ',cpfCriptografado)
 
         return res.status(200).json({
             codCliente: cliente.codCliente,
@@ -114,6 +112,23 @@ const atualizar = async(req,res)=>{
         await Cliente.update(dadosAtualizados,{where:{codCliente:id}})
         return res.status(200).json({message: 'Cliente atualizado com sucesso'})
     }catch(err){
-        
+        console.error('Erro ao atualizar o cliente', err)
+        return res.status(500).json({message: 'Erro ao atualizar o cliente'})
     }
 }
+
+const apagar = async(req,res)=>{
+    const id = req.params.id
+    try{
+        const cliente = await Cliente.findByPk(id)
+        if(!cliente){
+            return res.status(404).json({message: 'Cliente não encontrado'})
+        }
+        await Cliente.destroy({where:{codCliente: id}})
+        return res.status(200).json({message: 'Cliente excluido com sucesso'})
+    }catch(err){
+
+    }
+}
+
+module.exports = {cadastrar, listar, consultar, atualizar, apagar}

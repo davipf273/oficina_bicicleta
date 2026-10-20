@@ -1,0 +1,12 @@
+## 1. Testar CPF com tamanho incorreto(Deve retornar erro 400)
+POST http://localhost:3000/cliente
+Content-Type: application/json
+
+{
+    "nome": "Teste Tamanho CPF",
+    "email": "erro@gmail.com",
+    "senha": "123",
+    "cpf": "12345678912",
+    "endereco": "Rua Teste, 0",
+    "telefone": "48900000000"
+}
